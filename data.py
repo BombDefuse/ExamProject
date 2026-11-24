@@ -39,7 +39,7 @@ class DataGrab:
                     for item in entity_values:
                         print("type:", entity_type)
                         print("value:", item)
-                        self.datalist.append({
+                        self.datalist.append({ 
                             "incidentId": incident["incidentId"],
                             "incidentName": incident["incidentName"],
                             "severity": incident["severity"],
