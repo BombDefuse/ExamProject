@@ -49,15 +49,15 @@ class DataGrab:
                         # print("type:", entity_type)
                         # print("value:", item)
                         self.datalist.append({ 
-                            "incidentId": incident["incidentId"],
-                            "incidentName": incident["incidentName"],
-                            "severity": incident["severity"],
-                            "status": incident["status"],
-                            "createdTime": incident["createdTime"],
-                            "alertId": alert["alertId"],
-                            "machineId": alert["machineId"],
-                            "detectionSource": alert["detectionSource"],
-                            "firstActivity": alert["firstActivity"],
+                            "incidentId": incident.get("incidentId",""),
+                            "incidentName": incident.get("incidentName",""),
+                            "severity": incident.get("severity",""),
+                            "status": incident.get("status",""),
+                            "createdTime": incident.get("createdTime",""),
+                            "alertId": alert.get("alertId",""),
+                            "machineId": alert.get("machineId",""),
+                            "detectionSource": alert.get("detectionSource",""),
+                            "firstActivity": alert.get("firstActivity",""),
                             "value": item,
                             "type": entity_type
                         })
