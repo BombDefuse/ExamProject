@@ -2,7 +2,6 @@ import requests
 import datetime;import time
 from database import Database
 from sorting import ListCreator
-from pprint import pprint
 
 class DataGrab:
     def __init__(self,link):
