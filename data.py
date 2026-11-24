@@ -10,7 +10,7 @@ class DataGrab:
         self.link = os.environ.get("link")
         self.email = os.environ.get("email")
         self.datalist = []
-        self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity", "entity"],dataInstance=self)
+        self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity", "value","entity"],dataInstance=self)
         self.id = ListCreator(itemlist=["alertId","incidentId","createdTime","machineId"],dataInstance=self)
 
     def get_token(self):
@@ -35,18 +35,20 @@ class DataGrab:
         self.timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         for incident in self.response["value"]:
             for alert in incident["alerts"]:
-                for items in alert["entities"]:
-                    for entity in alert["entities"][items]:
+                for entity_type, entity_values in alert["entities"].items():
+                    for item in entity_values:
+                        print("type:", entity_type)
+                        print("value:", item)
                         self.datalist.append({
-                        "incidentId": incident["incidentId"],
-                        "incidentName": incident["incidentName"],
-                        "severity": incident["severity"],
-                        "status": incident["status"],
-                        "createdTime": incident["createdTime"],
-                        "alertId": alert["alertId"],
-                        "machineId": alert["machineId"],
-                        "detectionSource": alert["detectionSource"],
-                        "firstActivity": alert["firstActivity"],
-                        #ToDo: any entity that can come (ips,domains,fileHashes,processes,url)
-                        "entity": entity
-                    })
+                            "incidentId": incident["incidentId"],
+                            "incidentName": incident["incidentName"],
+                            "severity": incident["severity"],
+                            "status": incident["status"],
+                            "createdTime": incident["createdTime"],
+                            "alertId": alert["alertId"],
+                            "machineId": alert["machineId"],
+                            "detectionSource": alert["detectionSource"],
+                            "firstActivity": alert["firstActivity"],
+                            "value": item,
+                            "type": entity_type
+                        })
