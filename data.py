@@ -9,25 +9,29 @@ class DataGrab:
         self.link = os.environ.get("link")
         self.email = os.environ.get("email")
         self.datalist = []
-        self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity", "value","entity"],dataInstance=self)
-        self.incidents = ListCreator(itemlist=["alertId","incidentId","createdTime","machineId"],dataInstance=self)
-        self.ioc = ListCreator(itemlist=["incidentid"],dataInstance=self)
+        self.incidents = ListCreator(itemlist=["alertId","incidentId","severity","status","createdTime"],dataInstance=self)
+        self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity"],dataInstance=self)
+        self.ioc = ListCreator(itemlist=["incidentId","type","value"],dataInstance=self)
 
     def get_token(self):
         try:
             self.token = requests.post(f"{self.link}/api/auth/token", json={"email":self.email}).json()["token"]
-            print(self.token)
         except Exception as error:
             print(f"[Error] {error}")
 
     def get_incidents(self):
         try:
-            self.response = requests.get(f"{self.link}/api/incidents?$top=100&$skip=0", headers={"Authorization": f"Bearer {self.token}"}).json()
-            self.Create_List()
-            time.sleep(1.5)
-            while self.response.get("@odata.nextLink"):
-                self.response = requests.get(f"{self.link}{self.response["@odata.nextLink"]}", headers={"Authorization": f"Bearer {self.token}"}).json()
+            url = f"{self.link}/api/incidents?$top=100&$skip=0"
+            while url:
+                response = requests.get(url,headers={"Authorization": f"Bearer {self.token}"})
+                if response.status_code != 200:
+                    print(f"[Error] API returned {response.status_code}")
+                    break
+                self.response = response.json()#Needs to swap to json here to recieve status code
                 self.Create_List()
+                self.next_link = self.response.get("@odata.nextLink")
+                url = f"{self.link}{self.next_link}" if self.next_link else None
+                time.sleep(1.5)
         except Exception as error:
             print(f"[Error] {error}")
 
@@ -37,8 +41,8 @@ class DataGrab:
             for alert in incident["alerts"]:
                 for entity_type, entity_values in alert["entities"].items():
                     for item in entity_values:
-                        print("type:", entity_type)
-                        print("value:", item)
+                        # print("type:", entity_type)
+                        # print("value:", item)
                         self.datalist.append({ 
                             "incidentId": incident["incidentId"],
                             "incidentName": incident["incidentName"],
