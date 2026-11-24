@@ -2,11 +2,13 @@ import requests
 import datetime;import time
 from database import Database
 from sorting import ListCreator
+import os
+from dotenv import load_dotenv
 
 class DataGrab:
-    def __init__(self,link):
-        self.link = link
-        self.email = "bjma1001@stud.ek.dk"
+    def __init__(self):
+        self.link = os.environ.get("link")
+        self.email = os.environ.get("email")
         self.datalist = []
         self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity"],dataInstance=self)
         self.id = ListCreator(itemlist=["alertId","incidentId","createdTime","machineId"],dataInstance=self)
