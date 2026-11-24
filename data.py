@@ -10,7 +10,7 @@ class DataGrab:
         self.link = os.environ.get("link")
         self.email = os.environ.get("email")
         self.datalist = []
-        self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity"],dataInstance=self)
+        self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity", "entity"],dataInstance=self)
         self.id = ListCreator(itemlist=["alertId","incidentId","createdTime","machineId"],dataInstance=self)
 
     def get_token(self):
@@ -36,8 +36,8 @@ class DataGrab:
         for incident in self.response["value"]:
             for alert in incident["alerts"]:
                 for items in alert["entities"]:
-                    print(alert["entities"][items])
-                    self.datalist.append({
+                    for entity in alert["entities"][items]:
+                        self.datalist.append({
                         "incidentId": incident["incidentId"],
                         "incidentName": incident["incidentName"],
                         "severity": incident["severity"],
@@ -48,4 +48,5 @@ class DataGrab:
                         "detectionSource": alert["detectionSource"],
                         "firstActivity": alert["firstActivity"],
                         #ToDo: any entity that can come (ips,domains,fileHashes,processes,url)
+                        "entity": entity
                     })

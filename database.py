@@ -4,7 +4,7 @@ class Database:
     def __init__(self, api_instance):
         #Stores the api instance as variable instance and then saves that as self.api similar to self.link = link
         self.api = api_instance
-        sql querry = """
+        sqlquerry = """
         CREATE TABLE IF NOT EXISTS incidents (
             id INTEGER PRIMARY KEY NOT NULL,
             alertID TEXT NOT NULL,
