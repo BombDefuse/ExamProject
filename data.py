@@ -23,15 +23,20 @@ class DataGrab:
         try:
             url = f"{self.link}/api/incidents?$top=100&$skip=0"
             while url:
-                response = requests.get(url,headers={"Authorization": f"Bearer {self.token}"})
-                if response.status_code != 200:
-                    print(f"[Error] API returned {response.status_code}")
-                    break
-                self.response = response.json()#Needs to swap to json here to recieve status code
-                self.Create_List()
-                self.next_link = self.response.get("@odata.nextLink")
-                url = f"{self.link}{self.next_link}" if self.next_link else None
-                time.sleep(1.5)
+                for attempts in range(4):
+                    response = requests.get(url,headers={"Authorization": f"Bearer {self.token}"})
+                    if response.status_code != 200:
+                        print(f"[Error] API returned {response.status_code}")
+                    self.response = response.json()#Needs to swap to json here to recieve status code
+                    self.Create_List()
+                    self.next_link = self.response.get("@odata.nextLink")
+                    if self.next_link:
+                        url = f"{self.link}{self.next_link}"
+                    else:
+                        url = None
+                    time.sleep(1.5)
+            else:
+                print(f"[Error] Maximum tries of {attempts} reached")
         except Exception as error:
             print(f"[Error] {error}")
 
