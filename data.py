@@ -1,6 +1,5 @@
 import requests
 import datetime;import time
-from database import Database
 from sorting import ListCreator
 import os
 from dotenv import load_dotenv
@@ -11,7 +10,8 @@ class DataGrab:
         self.email = os.environ.get("email")
         self.datalist = []
         self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity", "value","entity"],dataInstance=self)
-        self.id = ListCreator(itemlist=["alertId","incidentId","createdTime","machineId"],dataInstance=self)
+        self.incidents = ListCreator(itemlist=["alertId","incidentId","createdTime","machineId"],dataInstance=self)
+        self.ioc = ListCreator(itemlist=["incidentid"],dataInstance=self)
 
     def get_token(self):
         try:
