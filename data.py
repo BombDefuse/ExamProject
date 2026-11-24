@@ -4,9 +4,9 @@ from database import Database
 from sorting import ListCreator
 import os
 from dotenv import load_dotenv
-
 class DataGrab:
     def __init__(self):
+        load_dotenv(dotenv_path=".env")
         self.link = os.environ.get("link")
         self.email = os.environ.get("email")
         self.datalist = []
@@ -16,6 +16,7 @@ class DataGrab:
     def get_token(self):
         try:
             self.token = requests.post(f"{self.link}/api/auth/token", json={"email":self.email}).json()["token"]
+            print(self.token)
         except Exception as error:
             print(f"[Error] {error}")
 
