@@ -40,22 +40,21 @@ class DataGrab:
             print(f"[Error] {error}")
 
     def Create_List(self):
-        self.timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        # self.timestamp = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
         for incident in self.response["value"]:
+            self.incidentlist.append([incident.get("incidentId",""),
+            incident.get("incidentName"),
+            incident.get("severity",""),
+            incident.get("status",""),
+            incident.get("createdTime",""),])
             for alert in incident["alerts"]:
+                self.alertlist.append([alert.get("alertId",""),
+                incident.get("incidentId",""),
+                alert.get("machineId",""),
+                alert.get("detectionSource",""),
+                alert.get("firstActivity","")])
                 for entity_type, entity_values in alert["entities"].items():
                     for item in entity_values:
                         self.ioclist.append([incident.get("incidentId",""),
-                                             entity_type,
-                                             item])
-                self.incidentlist.append([alert.get("alertId",""),
-                                        incident.get("incidentId",""),
-                                        incident.get("severity",""),
-                                        incident.get("status",""),
-                                        incident.get("createdTime",""),])
-    
-                self.alertlist.append([alert.get("alertId",""),
-                                        incident.get("incidentId",""),
-                                        alert.get("machineId",""),
-                                        alert.get("detectionSource",""),
-                                        alert.get("firstActivity","")])
+                        entity_type,
+                        item])

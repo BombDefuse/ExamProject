@@ -12,10 +12,11 @@ class Database:
                     UNIQUE ({', '.join(columns)})
                 )
             """
-            print(f"Creating table: {name}")
+            print(f"Created table: {name}")
             print(self.query)
             self.cursor.execute(self.query)
-            self.conn.commit()
-
+        self.conn.commit()
     def Write_Database(self):
         print(self.data.alertlist)
+        print(self.data.incidentlist)
+        print(self.data.ioclist)
