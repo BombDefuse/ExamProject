@@ -1,17 +1,16 @@
 import requests
 import datetime;import time
-from sorting import ListCreator
 import os
 from dotenv import load_dotenv
+import pprint
 class DataGrab:
     def __init__(self):
         load_dotenv(dotenv_path=".env")
         self.link = os.environ.get("link")
         self.email = os.environ.get("email")
-        self.datalist = []
-        self.incidents = ListCreator(itemlist=["alertId","incidentId","severity","status","createdTime"],dataInstance=self)
-        self.alerts = ListCreator(itemlist=["alertId","incidentId","machineId","detectionSource","firstActivity"],dataInstance=self)
-        self.ioc = ListCreator(itemlist=["incidentId","type","value"],dataInstance=self)
+        self.alertlist = []
+        self.incidentlist = []
+        self.ioclist = []
 
     def get_token(self):
         try:
@@ -46,18 +45,17 @@ class DataGrab:
             for alert in incident["alerts"]:
                 for entity_type, entity_values in alert["entities"].items():
                     for item in entity_values:
-                        # print("type:", entity_type)
-                        # print("value:", item)
-                        self.datalist.append({ 
-                            "incidentId": incident.get("incidentId",""),
-                            "incidentName": incident.get("incidentName",""),
-                            "severity": incident.get("severity",""),
-                            "status": incident.get("status",""),
-                            "createdTime": incident.get("createdTime",""),
-                            "alertId": alert.get("alertId",""),
-                            "machineId": alert.get("machineId",""),
-                            "detectionSource": alert.get("detectionSource",""),
-                            "firstActivity": alert.get("firstActivity",""),
-                            "value": item,
-                            "type": entity_type
-                        })
+                        self.ioclist.append([incident.get("incidentId",""),
+                                             entity_type,
+                                             item])
+                self.incidentlist.append([alert.get("alertId",""),
+                                        incident.get("incidentId",""),
+                                        incident.get("severity",""),
+                                        incident.get("status",""),
+                                        incident.get("createdTime",""),])
+    
+                self.alertlist.append([alert.get("alertId",""),
+                                        incident.get("incidentId",""),
+                                        alert.get("machineId",""),
+                                        alert.get("detectionSource",""),
+                                        alert.get("firstActivity","")])

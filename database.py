@@ -1,20 +1,21 @@
 import sqlite3 as sql
 class Database:
-    def __init__(self, name,*tables):
+    def __init__(self,name,data_instance,*tables):
+        self.data = data_instance
         self.conn = sql.connect(name)
         self.cursor = self.conn.cursor()
 
         for name, columns in tables:
-            query = f"""
+            self.query = f"""
                 CREATE TABLE IF NOT EXISTS {name} (
                     {', '.join(f'{col} TEXT NOT NULL' for col in columns)},
                     UNIQUE ({', '.join(columns)})
                 )
             """
-
             print(f"Creating table: {name}")
-            print(query)
+            print(self.query)
+            self.cursor.execute(self.query)
+            self.conn.commit()
 
-            self.cursor.execute(query)
-
-        self.conn.commit()
+    def Write_Database(self):
+        print(self.data.alertlist)
